@@ -73,9 +73,10 @@ client.on('message', (channel, userstate, message, self) => {
     }
 
   onMessageHandler (channel, userstate, message)
+  onMessageHandler2 (channel, userstate, message)
 });
 
-// spam moderators
+// SPAM MODERATORS
 
 client.on('chat', (channel, user, message, userstate) => {
   if (user.mod) {
@@ -107,6 +108,17 @@ client.on('chat', (channel, user, message, userstate) => {
   }
 })
 
+// EMOTEONLY on/off
+
+client.on('message', (channel, userstate, message, self) => {
+  if (message.toLowerCase() === '!on' && userstate.username === '1gamach') { 
+    client.emoteonly(channel)
+  }
+  if (message.toLowerCase() === '!off' && userstate.username === '1gamach') { 
+    client.emoteonlyoff(channel)  
+  }
+})
+
 // TIMEOUT USER
 
 //client.on('chat', (channel, user, message, userstate) => {
@@ -127,12 +139,26 @@ function onMessageHandler (channel, userstate, message) {
   checkTwitchChat(userstate, message, channel)
 } 
 
+function onMessageHandler2 (channel, userstate, message) {
+//  checkTwitchChat2(userstate, message, channel)
+}
+
 function checkTwitchChat(userstate, message, channel) {
-  let BLOCKED_WORDS = ['z', 'v', 'zv', 'vz', 'zz', 'vv', 'zzz', 'vvv', 'zvz', 'vzv', 'z v']
+  let BLOCKED_WORDS1 = ['z', 'v', 'zv', 'vz', 'zz', 'vv', 'zzz', 'vvv', 'zvz', 'vzv', 'z v']
   message = message.toLowerCase()
-  for (var i = 0; i < BLOCKED_WORDS.length; i++) {
-        if (BLOCKED_WORDS[i] === message) {
+  for (var i = 0; i < BLOCKED_WORDS1.length; i++) {
+        if (BLOCKED_WORDS1[i] === message) {
             client.deletemessage(channel, userstate.id)
         }
     }
 } 
+
+function checkTwitchChat2(userstate, message, channel) {
+  message = message.toLowerCase()
+  let shouldSendMessage = false
+  BLOCKED_WORDS = ['z', 'v']
+  shouldSendMessage = BLOCKED_WORDS.some(blockedWord => message.includes(blockedWord.toLowerCase()))
+  if (shouldSendMessage) {
+    client.deletemessage(channel, userstate.id)
+  }
+}
